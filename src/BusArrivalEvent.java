@@ -1,24 +1,19 @@
-import java.util.List;
-
-public class BusArrivalEvent extends Event {
-    private final Bus bus;
-
+public class BusArrivalEvent extends BusEvent {
     public BusArrivalEvent(Bus bus, int time) {
-        super(time, EventType.BUS_ARRIVAL);
-        this.bus = bus;
+        super(bus, time, EventType.BUS_ARRIVAL);
         bus.setArrivalEvent(this);
     }
 
     @Override
-    public String message() {
-        return "Το λεωφορείο " + bus.getOrder() + " μπήκε στην ουρά για διάδρομο αναχώρησης.";
+    protected String message() {
+        return "Το λεωφορείο " + bus.getName() + " μπήκε στην ουρά για διάδρομο επιβίβασης.";
     }
 
     @Override
-    public void process(Simulation sim) {
+    protected void process(Simulation sim) throws Exception {
         // Αν υπάρχει κενός διάδρομος, το λεωφορείο τον καταλαμβάνει
         if (sim.getPlatforms().contains(null)) {
-            sim.getEventQueue().add(new BusSeizePlatformEvent(bus, time));
+            new BusSeizePlatformEvent(bus, getTime()).run(sim);
         }
         else {
             sim.getWarehouse().add(bus);

@@ -1,13 +1,16 @@
 import java.io.IOException;
 
 public abstract class Event implements Comparable<Event> {
-    public int time;
-    public EventType type;
+    private final int time;
+    private final EventType type;
 
     public enum EventType {
         BUS_ARRIVAL,
         BUS_SEIZE_PLATFORM,
-        BUS_DEPART_PLATFORM
+        BUS_DEPART_PLATFORM,
+        BUS_QUEUE_FOR_EXIT,
+        BUS_SEIZE_EXIT,
+        BUS_DEPART_EXIT
     }
 
     public static final String ANSI_RESET = "\u001B[0m";
@@ -25,9 +28,17 @@ public abstract class Event implements Comparable<Event> {
         this.type = type;
     }
 
-    public abstract String message();
+    public int getTime() {
+        return time;
+    }
 
-    protected void log() {
+    public EventType getType() {
+        return type;
+    }
+
+    protected abstract String message() throws Exception;
+
+    protected void log() throws Exception {
         System.out.printf("[" + ANSI_GREEN + "t = %06d" + ANSI_RESET + "] %s%n", time, message());
         try {
             Main.writer.write(String.format("[t = %06d] %s%n", time, message()));
@@ -36,7 +47,12 @@ public abstract class Event implements Comparable<Event> {
         }
     }
 
-    public abstract void process(Simulation sim) throws Exception;
+    protected abstract void process(Simulation sim) throws Exception;
+
+    public void run(Simulation sim) throws Exception {
+        log();
+        process(sim);
+    }
 
     @Override
     public int compareTo(Event o) {
