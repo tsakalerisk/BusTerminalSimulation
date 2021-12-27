@@ -10,10 +10,6 @@ public class Generator {
         return randomNumber;
     }
 
-    public static double randomUniform(double from, double to) {
-        return from + random() * (to - from);
-    }
-
     public static int randomUniform(int from, int to) {
         return (int) (from + random() * (to - from));
     }

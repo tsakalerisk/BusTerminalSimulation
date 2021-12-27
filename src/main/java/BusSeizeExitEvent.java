@@ -15,6 +15,7 @@ public class BusSeizeExitEvent extends BusEvent {
     protected void process(Simulation sim) {
         List<Bus> exits = sim.getExits().get(bus.getDest());
         exits.set(exits.indexOf(null), bus);
-        sim.getEventQueue().add(new BusDepartExitEvent(bus, getTime() + Generator.randomUniform(3, 7)));
+        int departTime = getTime() + Generator.randomUniform(Simulation.exitCheckInterval.getMinimum(), Simulation.exitCheckInterval.getMaximum());
+        sim.getEventQueue().add(new BusDepartExitEvent(bus, departTime));
     }
 }

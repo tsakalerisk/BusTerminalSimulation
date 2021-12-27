@@ -1,3 +1,5 @@
+import org.apache.commons.lang3.Range;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -6,6 +8,10 @@ public class Simulation {
     public static final int N_PLATFORMS = 2;
     public static final int N_EXITS_NORTH = 1;
     public static final int N_EXITS_SOUTH = 1;
+
+    public static final Range<Integer> busArrivalInterval = Range.between(15, 20);
+    public static final Range<Integer> boardingInterval = Range.between(25, 35);
+    public static final Range<Integer> exitCheckInterval = Range.between(3, 7);
 
     //Ουρά με ανεξάρτητα γεγονότα ταξινομημένα σε χρονική σειρά
     private final SimulationQueue eventQueue = new SimulationQueue();
@@ -28,7 +34,7 @@ public class Simulation {
     );
 
     public Simulation() throws Exception {
-        generateBuses(15, 20);
+        generateBuses(busArrivalInterval.getMinimum(), busArrivalInterval.getMaximum());
         eventQueue.addAll(getBusArrivals());
         while (!eventQueue.isEmpty() && eventQueue.peek().getTime() <= SIM_TIME)
             eventQueue.remove().run(this);
