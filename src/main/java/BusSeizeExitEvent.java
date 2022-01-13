@@ -1,8 +1,10 @@
 import java.util.List;
 
-public class BusSeizeExitEvent extends BusEvent {
+public class BusSeizeExitEvent extends Event {
+
+    //Κατάληψη μίας εξόδου από ένα λεωφορείο
     protected BusSeizeExitEvent(Bus bus, int time) {
-        super(bus, time, EventType.BUS_SEIZE_EXIT);
+        super(bus, time);
         bus.setSeizeExitEvent(this);
     }
 
@@ -13,8 +15,13 @@ public class BusSeizeExitEvent extends BusEvent {
 
     @Override
     protected void process(Simulation sim) {
+        //Το λεωφορείο καταλαμβάνει την πρώτη διαθέσιμη έξοδο που
+        //αντιστοιχεί στον προορισμό του και δημιουργεί
+        // ένα BusDepartExitEvent που προτίθεται στην ουρά γεγονότων της προσομοίωσης.
+
         List<Bus> exits = sim.getExits().get(bus.getDest());
         exits.set(exits.indexOf(null), bus);
+
         int departTime = getTime() + Generator.randInt(Simulation.exitCheckInterval.getMinimum(), Simulation.exitCheckInterval.getMaximum());
         sim.getEventQueue().add(new BusDepartExitEvent(bus, departTime));
     }

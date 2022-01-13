@@ -1,6 +1,8 @@
 public class Bus {
-    private final int order;
-    private final Destination dest;
+    private final int order; //Αριθμός του λεωφορείου
+    private final Destination dest; //Προορισμός του λεωφορείου
+
+    //Γεγονότα του λεωφορείου
     private BusArrivalEvent arrivalEvent;
     private BusSeizePlatformEvent seizePlatformEvent;
     private BusDepartPlatformEvent departPlatformEvent;
