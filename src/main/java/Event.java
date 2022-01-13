@@ -1,41 +1,26 @@
 import java.io.IOException;
 
+/* Αφηρημένη κλάση που μοντελοποιεί ένα γεγονός. Κάθε υποκλάση
+θα πρέπει να δώσει υλοποίηση στις message() και process(). */
 public abstract class Event implements Comparable<Event> {
+    //Το λεωφορείο που αφορά το γεγονός
+    protected Bus bus;
+    //Ο χρόνος στον οποίο το γεγονός συμβαίνει
     private final int time;
-    private final EventType type;
-
-    public enum EventType {
-        BUS_ARRIVAL,
-        BUS_SEIZE_PLATFORM,
-        BUS_DEPART_PLATFORM,
-        BUS_QUEUE_FOR_EXIT,
-        BUS_SEIZE_EXIT,
-        BUS_DEPART_EXIT
-    }
 
     public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
 
-    protected Event(int time, EventType type) {
+    protected Event(Bus bus, int time) {
+        this.bus = bus;
         this.time = time;
-        this.type = type;
     }
 
     public int getTime() {
         return time;
     }
 
-    public EventType getType() {
-        return type;
-    }
-
+    //Το μήνυμα που εκτυπώνεται στα logs όταν τρέχει το γεγονός
     protected abstract String message() throws Exception;
 
     protected void log() throws Exception {
@@ -47,6 +32,8 @@ public abstract class Event implements Comparable<Event> {
         }
     }
 
+    /*Τι συμβαίνει κατά την εκτέλεση του γεγονότος, πχ. κατάληψη/απελευθέρωση
+    πόρων, δημιουργία εξαρτημένων/ανεξάρτητων γεγονότων κλπ. */
     protected abstract void process(Simulation sim) throws Exception;
 
     public void run(Simulation sim) throws Exception {

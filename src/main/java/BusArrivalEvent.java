@@ -1,6 +1,8 @@
-public class BusArrivalEvent extends BusEvent {
+public class BusArrivalEvent extends Event {
+
+    //Άφιξη ενός λεωφορείου στον σταθμό
     public BusArrivalEvent(Bus bus, int time) {
-        super(bus, time, EventType.BUS_ARRIVAL);
+        super(bus, time);
         bus.setArrivalEvent(this);
     }
 
@@ -11,12 +13,12 @@ public class BusArrivalEvent extends BusEvent {
 
     @Override
     protected void process(Simulation sim) throws Exception {
-        // Αν υπάρχει κενός διάδρομος, το λεωφορείο τον καταλαμβάνει
-        if (sim.getPlatforms().contains(null)) {
+        // Αν υπάρχει κενός διάδρομος, δημιουργείται ένα BusSeizePlatformEvent που εκτελείται άμεσα
+        // Αλλιώς, το λεωφορείο προτίθεται στην αποθήκη του σταθμού.
+
+        if (sim.getPlatforms().contains(null))
             new BusSeizePlatformEvent(bus, getTime()).run(sim);
-        }
-        else {
+        else
             sim.getWarehouse().add(bus);
-        }
     }
 }
