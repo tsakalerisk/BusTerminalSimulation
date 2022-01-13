@@ -1,20 +1,13 @@
+import java.util.Random;
+
 public class Generator {
-    static long a = 1103515245;
-    static long c = 12345;
-    static long m = 2147483648L;
-    static long z = 1077267865;
+    static Random generator = new Random(1);
 
-    public static double random() {
-        double randomNumber = z / (double) m;
-        z = calculateNewZ();
-        return randomNumber;
+    public static void setSeed(long seed) {
+        generator.setSeed(seed);
     }
 
-    public static int randomUniform(int from, int to) {
-        return (int) (from + random() * (to - from));
-    }
-
-    private static long calculateNewZ() {
-        return (a * z + c) % m;
+    public static int randInt(int from, int to) {
+        return generator.nextInt(to - from + 1) + from;
     }
 }

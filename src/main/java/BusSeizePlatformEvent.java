@@ -15,7 +15,7 @@ public class BusSeizePlatformEvent extends BusEvent {
     protected void process(Simulation sim) {
         List<Bus> platforms = sim.getPlatforms();
         platforms.set(platforms.indexOf(null), bus);
-        int departTime = getTime() + Generator.randomUniform(Simulation.boardingInterval.getMinimum(), Simulation.boardingInterval.getMaximum());
+        int departTime = getTime() + Generator.randInt(Simulation.boardingInterval.getMinimum(), Simulation.boardingInterval.getMaximum());
         sim.getEventQueue().add(new BusDepartPlatformEvent(bus, departTime));
     }
 }

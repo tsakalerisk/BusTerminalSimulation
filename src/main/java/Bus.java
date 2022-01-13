@@ -16,7 +16,7 @@ public class Bus {
     public Bus(int order, int arrivalTime) {
         this.order = order;
         arrivalEvent = new BusArrivalEvent(this, arrivalTime);
-        dest = Generator.random() < 0.25 ? Destination.NORTH : Destination.SOUTH;
+        dest = Generator.randInt(0, 100) < 25 ? Destination.NORTH : Destination.SOUTH;
     }
 
     public String getName() {

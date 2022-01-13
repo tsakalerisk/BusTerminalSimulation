@@ -5,13 +5,15 @@ import java.util.stream.Collectors;
 
 public class Simulation {
     public static final int SIM_TIME = 1440;
-    public static final int N_PLATFORMS = 2;
+    public static final int N_PLATFORMS = 5;
     public static final int N_EXITS_NORTH = 1;
-    public static final int N_EXITS_SOUTH = 1;
+    public static final int N_EXITS_SOUTH = 2;
 
-    public static final Range<Integer> busArrivalInterval = Range.between(15, 20);
+    public static final Range<Integer> busArrivalInterval = Range.between(5, 10);
     public static final Range<Integer> boardingInterval = Range.between(25, 35);
-    public static final Range<Integer> exitCheckInterval = Range.between(3, 7);
+    public static final Range<Integer> exitCheckInterval = Range.between(10, 15);
+
+    public static final boolean randomized = false;
 
     //Ουρά με ανεξάρτητα γεγονότα ταξινομημένα σε χρονική σειρά
     private final SimulationQueue eventQueue = new SimulationQueue();
@@ -34,16 +36,17 @@ public class Simulation {
     );
 
     public Simulation() throws Exception {
+        if (randomized) Generator.setSeed(System.currentTimeMillis());
         generateBuses(busArrivalInterval.getMinimum(), busArrivalInterval.getMaximum());
         eventQueue.addAll(getBusArrivals());
         while (!eventQueue.isEmpty() && eventQueue.peek().getTime() <= SIM_TIME)
             eventQueue.remove().run(this);
-        System.out.printf("%nΜέσος χρόνος αναμονής για διάδρομο επιβίβασης: %.3f λεπτά%n", calcWaitForPlatform());
-        System.out.printf("Μέσος χρόνος αναμονής για βόρεια έξοδο: %.3f λεπτά%n", calcWaitForExit(Bus.Destination.NORTH));
-        System.out.printf("Μέσος χρόνος αναμονής για νότια έξοδο: %.3f λεπτά%n", calcWaitForExit(Bus.Destination.SOUTH));
+        System.out.printf("%nΜέσος χρόνος αναμονής για διάδρομο επιβίβασης: %.3f λεπτά%n", calcAvgWaitForPlatform());
+        System.out.printf("Μέσος χρόνος αναμονής για βόρεια έξοδο: %.3f λεπτά%n", calcAvgWaitForExit(Bus.Destination.NORTH));
+        System.out.printf("Μέσος χρόνος αναμονής για νότια έξοδο: %.3f λεπτά%n", calcAvgWaitForExit(Bus.Destination.SOUTH));
     }
 
-    public double calcWaitForExit(Bus.Destination dest) {
+    public double calcAvgWaitForExit(Bus.Destination dest) {
         return buses.stream()
                 .filter(i -> i.getDest().equals(dest) && i.getQueueForExitEvent() != null && i.getSeizeExitEvent() != null)
                 .mapToInt(i -> i.getSeizeExitEvent().getTime() - i.getQueueForExitEvent().getTime())
@@ -51,7 +54,7 @@ public class Simulation {
                 .orElse(Double.NaN);
     }
 
-    public double calcWaitForPlatform() {
+    public double calcAvgWaitForPlatform() {
         return buses.stream()
                 .filter(i -> i.getArrivalEvent() != null && i.getSeizePlatformEvent() != null)
                 .mapToInt(i -> i.getSeizePlatformEvent().getTime() - i.getArrivalEvent().getTime())
@@ -64,10 +67,10 @@ public class Simulation {
     }
 
     private void generateBuses(int from, int to) {
-        int lastArrivalTime = Generator.randomUniform(from, to);
+        int lastArrivalTime = Generator.randInt(from, to);
         while (lastArrivalTime < SIM_TIME) {
             buses.add(new Bus(buses.size() + 1, lastArrivalTime));
-            lastArrivalTime = lastArrivalTime + Generator.randomUniform(from, to);
+            lastArrivalTime = lastArrivalTime + Generator.randInt(from, to);
         }
     }
 

@@ -39,7 +39,7 @@ public abstract class Event implements Comparable<Event> {
     protected abstract String message() throws Exception;
 
     protected void log() throws Exception {
-        System.out.printf("[" + ANSI_GREEN + "t = %06d" + ANSI_RESET + "] %s%n", time, message());
+        System.out.printf("[" + ANSI_GREEN + "t = %04d" + ANSI_RESET + "] %s%n", time, message());
         try {
             Main.writer.write(String.format("[t = %06d] %s%n", time, message()));
         } catch (IOException e) {
