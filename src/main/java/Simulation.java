@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 
 public class Simulation {
     //Χρόνος εκτέλεσης της προσομοίωσης
-    public static final int SIM_TIME = 1440;
+    public static final int SIM_TIME = 60;
 
     //Διαθέσιμοι πόροι
-    public static final int N_PLATFORMS = 5;
+    public static final int N_PLATFORMS = 3;
     public static final int N_EXITS_NORTH = 1;
-    public static final int N_EXITS_SOUTH = 2;
+    public static final int N_EXITS_SOUTH = 1;
 
     //Χρονικά διαστήματα
     public static final Range<Integer> busArrivalInterval = Range.between(5, 10);
@@ -52,9 +52,9 @@ public class Simulation {
             eventQueue.remove().run(this);
 
         //Εμφάνιση στατιστικών
-        System.out.printf("%nΜέσος χρόνος αναμονής για διάδρομο επιβίβασης: %.3f λεπτά%n", calcAvgWaitForPlatform());
-        System.out.printf("Μέσος χρόνος αναμονής για βόρεια έξοδο: %.3f λεπτά%n", calcAvgWaitForExit(Bus.Destination.NORTH));
-        System.out.printf("Μέσος χρόνος αναμονής για νότια έξοδο: %.3f λεπτά%n", calcAvgWaitForExit(Bus.Destination.SOUTH));
+        Main.log("%nΜέσος χρόνος αναμονής για διάδρομο επιβίβασης: %.3f λεπτά%n", calcAvgWaitForPlatform());
+        Main.log("Μέσος χρόνος αναμονής για βόρεια έξοδο: %.3f λεπτά%n", calcAvgWaitForExit(Bus.Destination.NORTH));
+        Main.log("Μέσος χρόνος αναμονής για νότια έξοδο: %.3f λεπτά%n", calcAvgWaitForExit(Bus.Destination.SOUTH));
     }
 
     //Υπολογισμός μέσης αναμονής για έξοδο

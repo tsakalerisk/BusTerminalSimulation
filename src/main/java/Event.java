@@ -1,5 +1,3 @@
-import java.io.IOException;
-
 /* Αφηρημένη κλάση που μοντελοποιεί ένα γεγονός. Κάθε υποκλάση
 θα πρέπει να δώσει υλοποίηση στις message() και process(). */
 public abstract class Event implements Comparable<Event> {
@@ -23,21 +21,14 @@ public abstract class Event implements Comparable<Event> {
     //Το μήνυμα που εκτυπώνεται στα logs όταν τρέχει το γεγονός
     protected abstract String message() throws Exception;
 
-    protected void log() throws Exception {
-        System.out.printf("[" + ANSI_GREEN + "t = %04d" + ANSI_RESET + "] %s%n", time, message());
-        try {
-            Main.writer.write(String.format("[t = %06d] %s%n", time, message()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     /*Τι συμβαίνει κατά την εκτέλεση του γεγονότος, πχ. κατάληψη/απελευθέρωση
     πόρων, δημιουργία εξαρτημένων/ανεξάρτητων γεγονότων κλπ. */
     protected abstract void process(Simulation sim) throws Exception;
 
     public void run(Simulation sim) throws Exception {
-        log();
+        Main.logColor("[" + ANSI_GREEN + "t = %04d" + ANSI_RESET + "] %s%n",
+                "[t = %04d] %s%n",
+                time, message());
         process(sim);
     }
 
