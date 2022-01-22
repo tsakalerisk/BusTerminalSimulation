@@ -7,7 +7,11 @@ public class Generator {
         generator.setSeed(seed);
     }
 
-    public static int randInt(int from, int to) {
-        return generator.nextInt(to - from + 1) + from;
+    public static double random() {
+        return generator.nextDouble();
+    }
+
+    public static int randFromRange(Range range) {
+        return generator.nextInt(range.max() - range.min() + 1) + range.min();
     }
 }

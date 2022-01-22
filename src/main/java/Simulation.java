@@ -1,21 +1,19 @@
-import org.apache.commons.lang3.Range;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Simulation {
     //Χρόνος εκτέλεσης της προσομοίωσης
-    public static final int SIM_TIME = 60;
+    public static final int SIM_TIME = 1440;
 
     //Διαθέσιμοι πόροι
-    public static final int N_PLATFORMS = 3;
+    public static final int N_PLATFORMS = 5;
     public static final int N_EXITS_NORTH = 1;
-    public static final int N_EXITS_SOUTH = 1;
+    public static final int N_EXITS_SOUTH = 2;
 
     //Χρονικά διαστήματα
-    public static final Range<Integer> busArrivalInterval = Range.between(5, 10);
-    public static final Range<Integer> boardingInterval = Range.between(25, 35);
-    public static final Range<Integer> exitCheckInterval = Range.between(10, 15);
+    public static final Range busArrivalInterval = new Range(5, 10);
+    public static final Range boardingInterval = new Range(25, 35);
+    public static final Range exitCheckInterval = new Range(10, 15);
 
     //Εκκίνηση της γεννήτριας τυχαίων αριθμών με seed βασισμένο στο ρολόι του συστήματος
     public static final boolean randomized = false;
@@ -44,7 +42,7 @@ public class Simulation {
         if (randomized) Generator.setSeed(System.currentTimeMillis());
 
         //Δημιουργία γεγονότων αφίξεων και προσθήκη τους στην ουρά γεγονότων
-        generateBuses(busArrivalInterval.getMinimum(), busArrivalInterval.getMaximum());
+        generateBuses();
         eventQueue.addAll(getBusArrivals());
 
         //Επεξεργασία των γεγονότων με Μηχανισμό Επόμενου Γεγονότος
@@ -79,12 +77,13 @@ public class Simulation {
         return buses.stream().map(Bus::getArrivalEvent).collect(Collectors.toList());
     }
 
-    //Δημιουργία λεωφορείων όπου οι αφίξεις τους στο σταθμό απέχουν [from, to]
-    private void generateBuses(int from, int to) {
-        int lastArrivalTime = Generator.randInt(from, to);
+    //Δημιουργία λεωφορείων όπου οι αφίξεις τους στον σταθμό απέχουν
+    // ανάμεσα στο ελάχιστο και στο μέγιστο του διαστήματος άφιξης
+    private void generateBuses() {
+        int lastArrivalTime = Generator.randFromRange(busArrivalInterval);
         while (lastArrivalTime < SIM_TIME) {
             buses.add(new Bus(buses.size() + 1, lastArrivalTime));
-            lastArrivalTime = lastArrivalTime + Generator.randInt(from, to);
+            lastArrivalTime = lastArrivalTime + Generator.randFromRange(busArrivalInterval);
         }
     }
 
